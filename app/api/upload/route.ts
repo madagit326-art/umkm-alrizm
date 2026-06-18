@@ -2,12 +2,34 @@ import { NextResponse } from "next/server";
 import { promises as fs } from "fs";
 import path from "path";
 
+const allowedMimeTypes = new Set([
+  "image/jpeg",
+  "image/png",
+  "image/webp",
+  "image/gif",
+]);
+const maxFileSize = 5 * 1024 * 1024;
+
 export async function POST(request: Request) {
   const formData = await request.formData();
   const file = formData.get("file");
 
   if (!file || typeof file === "string") {
     return NextResponse.json({ error: "File gambar diperlukan." }, { status: 400 });
+  }
+
+  if (!allowedMimeTypes.has(file.type)) {
+    return NextResponse.json(
+      { error: "Format file tidak didukung. Gunakan JPG, PNG, WEBP, atau GIF." },
+      { status: 400 }
+    );
+  }
+
+  if (file.size > maxFileSize) {
+    return NextResponse.json(
+      { error: "Ukuran file maksimal 5MB." },
+      { status: 400 }
+    );
   }
 
   const fileName = file.name || `image-${Date.now()}`;

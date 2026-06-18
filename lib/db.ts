@@ -12,12 +12,13 @@ const pool = mysql.createPool({
   user: MYSQL_USER,
   password: MYSQL_PASSWORD,
   database: MYSQL_DATABASE,
+  charset: "utf8mb4",
   waitForConnections: true,
   connectionLimit: 5,
   queueLimit: 0,
 });
 
-export async function query(sql: string, values: any[] = []) {
+export async function query<T = unknown>(sql: string, values: unknown[] = []): Promise<T[]> {
   const [rows] = await pool.query(sql, values);
-  return rows;
+  return rows as T[];
 }
