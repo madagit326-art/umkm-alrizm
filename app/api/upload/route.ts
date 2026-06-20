@@ -1,6 +1,3 @@
-console.log("BLOB_READ_WRITE_TOKEN exists:", !!process.env.BLOB_READ_WRITE_TOKEN);
-console.log("BLOB_STORE_ID exists:", !!process.env.BLOB_STORE_ID);
-
 import { NextResponse } from "next/server";
 import { promises as fs } from "fs";
 import path from "path";
@@ -15,14 +12,8 @@ const allowedMimeTypes = new Set([
 const maxFileSize = 5 * 1024 * 1024;
 
 function hasBlobCredentials() {
-  return Boolean(
-    process.env.BLOB_READ_WRITE_TOKEN ||
-      process.env.BLOB_TOKEN ||
-      process.env.VERCEL_OIDC_TOKEN ||
-      process.env.BLOB_STORE_ID
-  );
+  return false;
 }
-
 export async function POST(request: Request) {
   try {
     const formData = await request.formData();
