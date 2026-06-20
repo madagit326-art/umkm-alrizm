@@ -7,12 +7,34 @@ export default function ProductSection() {
   const [products, setProducts] = useState<Product[]>([]);
   const [visibleCount, setVisibleCount] = useState(8);
   const [searchQuery, setSearchQuery] = useState("");
+  const [error, setError] = useState("");
 
   useEffect(() => {
     fetch("/api/products")
-      .then((res) => res.json())
-      .then((data) => setProducts(data))
-      .catch(() => setProducts([]));
+      .then(async (res) => {
+        if (!res.ok) {
+          const data = await res.json().catch(() => ({}));
+          throw new Error(data.error || "Gagal memuat produk.");
+        }
+        return res.json();
+      })
+      .then((data) => {
+        if (Array.isArray(data)) {
+          setProducts(data);
+          setError("");
+        } else {
+          setProducts([]);
+          setError("Data produk tidak valid.");
+        }
+      })
+      .catch((err) => {
+        setProducts([]);
+        setError(
+          err instanceof Error
+            ? err.message
+            : "Tidak dapat memuat produk saat ini. Silakan coba lagi nanti."
+        );
+      });
   }, []);
 
   const normalizedQuery = searchQuery.trim().toLowerCase();
@@ -35,9 +57,13 @@ export default function ProductSection() {
   const highlighted = filteredProducts.filter((p) => p.highlight && String(p.highlight).trim() !== "");
   const featured = highlighted.length > 0 ? highlighted.slice(0, 4) : filteredProducts.slice(0, 4);
 
-  // Latest: exclude highlighted items to avoid duplication
-  const latestAll = filteredProducts.filter((p) => !(p.highlight && String(p.highlight).trim() !== ""));
-  const latest = latestAll.slice(0, visibleCount);
+  // Latest: show newest products, preferring non-duplicate items but allowing overlap when there are few items
+  const latestCandidates = filteredProducts.filter(
+    (p) => !featured.some((featuredProduct) => featuredProduct.id === p.id)
+  );
+  const latest = latestCandidates.length > 0
+    ? latestCandidates.slice(0, visibleCount)
+    : filteredProducts.slice(0, visibleCount);
 
   function loadMore() {
     setVisibleCount((v) => v + 8);
@@ -64,11 +90,15 @@ export default function ProductSection() {
           <p>Produk pilihan yang direkomendasikan oleh tim kami.</p>
         </div>
         <div className="small-feature-grid">
-          {featured.length > 0 ? (
+          {error ? (
+            <p style={{ color: "#dc2626" }}>{error}</p>
+          ) : featured.length > 0 ? (
             featured.map((item) => (
               <a key={item.id} href={`/product/${item.id}`} className="card small-card">
                 {item.highlight ? <span className="card-tag">{item.highlight}</span> : null}
-                <img src={item.image || "https://via.placeholder.com/640x480"} alt={item.name} />
+                <div className="card-media">
+                  <img src={item.image || "https://via.placeholder.com/640x480"} alt={item.name} />
+                </div>
                 <div>
                   <h4>{item.name}</h4>
                   <p className="product-price">Rp {Number(item.price).toLocaleString("id-ID")}</p>
@@ -89,11 +119,15 @@ export default function ProductSection() {
       </div>
 
       <div className="product-grid">
-        {latest.length > 0 ? (
+        {error ? (
+          <p style={{ gridColumn: "1 / -1", textAlign: "center", color: "#dc2626" }}>{error}</p>
+        ) : latest.length > 0 ? (
           latest.map((item) => (
             <a key={item.id} href={`/product/${item.id}`} className="card">
               {item.highlight ? <span className="card-tag">{item.highlight}</span> : null}
-              <img src={item.image || "https://via.placeholder.com/640x480"} alt={item.name} />
+              <div className="card-media">
+                <img src={item.image || "https://via.placeholder.com/640x480"} alt={item.name} />
+              </div>
               <div>
                 <span className="badge">{item.category}</span>
                 <h3>{item.name}</h3>
@@ -103,11 +137,11 @@ export default function ProductSection() {
             </a>
           ))
         ) : (
-          <p>Memuat produk...</p>
+          <p style={{ gridColumn: "1 / -1", textAlign: "center" }}>Memuat produk...</p>
         )}
       </div>
 
-      {visibleCount < latestAll.length ? (
+      {visibleCount < filteredProducts.length ? (
         <div style={{ textAlign: "center", marginTop: "1.5rem" }}>
           <button className="button secondary" onClick={loadMore}>Load more</button>
         </div>

@@ -1,6 +1,7 @@
 import { NextResponse } from "next/server";
 import { promises as fs } from "fs";
 import path from "path";
+import { put } from "@vercel/blob";
 
 const allowedMimeTypes = new Set([
   "image/jpeg",
@@ -10,42 +11,78 @@ const allowedMimeTypes = new Set([
 ]);
 const maxFileSize = 5 * 1024 * 1024;
 
+function hasBlobCredentials() {
+  return Boolean(
+    process.env.BLOB_READ_WRITE_TOKEN ||
+      process.env.BLOB_TOKEN ||
+      process.env.VERCEL_OIDC_TOKEN ||
+      process.env.BLOB_STORE_ID
+  );
+}
+
 export async function POST(request: Request) {
-  const formData = await request.formData();
-  const file = formData.get("file");
-
-  if (!file || typeof file === "string") {
-    return NextResponse.json({ error: "File gambar diperlukan." }, { status: 400 });
-  }
-
-  if (!allowedMimeTypes.has(file.type)) {
-    return NextResponse.json(
-      { error: "Format file tidak didukung. Gunakan JPG, PNG, WEBP, atau GIF." },
-      { status: 400 }
-    );
-  }
-
-  if (file.size > maxFileSize) {
-    return NextResponse.json(
-      { error: "Ukuran file maksimal 5MB." },
-      { status: 400 }
-    );
-  }
-
-  const fileName = file.name || `image-${Date.now()}`;
-  const safeName = `${Date.now()}-${fileName.replace(/[^a-zA-Z0-9._-]/g, "_")}`;
-  const uploadDir = path.join(process.cwd(), "public", "uploads");
-
   try {
+    const formData = await request.formData();
+    const file = formData.get("file");
+
+    if (!file || typeof file === "string") {
+      return NextResponse.json(
+        { error: "File gambar diperlukan." },
+        { status: 400 }
+      );
+    }
+
+    if (!allowedMimeTypes.has(file.type)) {
+      return NextResponse.json(
+        {
+          error:
+            "Format file tidak didukung. Gunakan JPG, PNG, WEBP, atau GIF.",
+        },
+        { status: 400 }
+      );
+    }
+
+    if (file.size > maxFileSize) {
+      return NextResponse.json(
+        { error: "Ukuran file maksimal 5MB." },
+        { status: 400 }
+      );
+    }
+
+    if (hasBlobCredentials()) {
+      const blob = await put(
+        `${Date.now()}-${file.name.replace(/[^a-zA-Z0-9._-]/g, "_")}`,
+        file,
+        {
+          access: "private",
+          contentType: file.type,
+          addRandomSuffix: true,
+        }
+      );
+
+      return NextResponse.json({ url: blob.url });
+    }
+
+    const fileName = file.name || `image-${Date.now()}`;
+    const safeName = `${Date.now()}-${fileName.replace(/[^a-zA-Z0-9._-]/g, "_")}`;
+    const uploadDir = path.join(process.cwd(), "public", "uploads");
+
     await fs.mkdir(uploadDir, { recursive: true });
     const buffer = Buffer.from(await file.arrayBuffer());
     const filePath = path.join(uploadDir, safeName);
     await fs.writeFile(filePath, buffer);
 
-    const url = `/uploads/${safeName}`;
-    return NextResponse.json({ url });
+    return NextResponse.json({ url: `/uploads/${safeName}` });
   } catch (err) {
     console.error("Upload error:", err);
-    return NextResponse.json({ error: "Gagal menyimpan file gambar." }, { status: 500 });
+    return NextResponse.json(
+      {
+        error:
+          err instanceof Error
+            ? err.message
+            : "Gagal menyimpan file gambar.",
+      },
+      { status: 500 }
+    );
   }
 }

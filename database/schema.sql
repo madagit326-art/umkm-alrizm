@@ -1,8 +1,5 @@
-CREATE DATABASE IF NOT EXISTS umkm_alrizm;
-USE umkm_alrizm;
-
 CREATE TABLE IF NOT EXISTS products (
-  id INT AUTO_INCREMENT PRIMARY KEY,
+  id BIGSERIAL PRIMARY KEY,
   name VARCHAR(255) NOT NULL,
   category VARCHAR(100) NOT NULL,
   price DECIMAL(10,2) NOT NULL,
@@ -20,7 +17,6 @@ INSERT INTO products (name, category, price, description, image, highlight) VALU
 ('Macrame Bracelet Tiger Eyes Stone', 'Bracelet', 150000, 'Gelangan tangan makrame dengan batu tiger eyes, cocok untuk gaya boho.', 'https://via.placeholder.com/640x480', 'Best Seller'),
 ('Handcrafted Necklace', 'Necklace', 175000, 'Kalung handmade dengan desain minimalis, ideal untuk sehari-hari.', 'https://via.placeholder.com/640x480', 'Populer');
 
--- Additional sample products for featured and latest sections
 INSERT INTO products (name, category, price, description, image, highlight) VALUES
 ('Beaded Bracelet - Ocean', 'Bracelet', 95000, 'Gelang manik-manik tema laut.', 'https://via.placeholder.com/640x480', 'Featured'),
 ('Silver Minimal Necklace', 'Necklace', 125000, 'Kalung silver sederhana untuk daily wear.', 'https://via.placeholder.com/640x480', ''),

@@ -1,24 +1,72 @@
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import { query } from "@/lib/db";
+import type { Product } from "@/lib/types";
 
 type Props = {
   params: { category: string };
 };
 
+const fallbackProducts: Product[] = [
+  {
+    id: 1,
+    name: "Macrame Bracelet Tiger Eyes Stone",
+    category: "Bracelet",
+    price: 150000,
+    description: "Gelangan tangan makrame dengan batu tiger eyes, cocok untuk gaya boho.",
+    image: "/placeholder.svg",
+    highlight: "Best Seller",
+  },
+  {
+    id: 2,
+    name: "Handcrafted Necklace",
+    category: "Necklace",
+    price: 175000,
+    description: "Kalung handmade dengan desain minimalis, ideal untuk sehari-hari.",
+    image: "/placeholder.svg",
+    highlight: "Populer",
+  },
+  {
+    id: 3,
+    name: "Beaded Bracelet - Ocean",
+    category: "Bracelet",
+    price: 95000,
+    description: "Gelang manik-manik tema laut.",
+    image: "/placeholder.svg",
+    highlight: "Featured",
+  },
+  {
+    id: 4,
+    name: "Silver Minimal Necklace",
+    category: "Necklace",
+    price: 125000,
+    description: "Kalung silver sederhana untuk daily wear.",
+    image: "/placeholder.svg",
+  },
+];
+
 export default async function CategoryPage({ params }: Props) {
   const raw = params.category || "";
   const category = decodeURIComponent(raw);
 
-  const products = await query(
-    "SELECT * FROM products WHERE LOWER(category) = LOWER(?) ORDER BY id DESC",
-    [category]
-  );
+  let products: Product[] = [];
 
-  // Separate featured and latest products
-  const productArray = Array.isArray(products) ? (products as any[]) : [];
-  const featured = productArray.filter((p) => p.highlight && String(p.highlight).trim() !== "").slice(0, 4);
-  const latest = productArray.filter((p) => !(p.highlight && String(p.highlight).trim() !== ""));
+  try {
+    products = await query<Product>(
+      "SELECT * FROM products WHERE LOWER(category) = LOWER(?) ORDER BY id DESC",
+      [category]
+    );
+  } catch (error) {
+    products = fallbackProducts.filter(
+      (item) => item.category.toLowerCase() === category.toLowerCase()
+    );
+  }
+
+  const safeProducts = Array.isArray(products) ? products : [];
+  const featured = safeProducts
+    .filter((p) => p.highlight && String(p.highlight).trim() !== "")
+    .slice(0, 4);
+  const latest = safeProducts.filter((p) => !(p.highlight && String(p.highlight).trim() !== ""));
 
   return (
     <main className="page-shell">
@@ -75,7 +123,7 @@ export default async function CategoryPage({ params }: Props) {
             </div>
           )}
 
-          {productArray.length === 0 && (
+          {safeProducts.length === 0 && (
             <p>Tidak ada produk untuk kategori ini.</p>
           )}
         </div>

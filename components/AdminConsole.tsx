@@ -72,9 +72,19 @@ export default function AdminConsole() {
         body: formData,
       });
 
-      const data = await response.json();
-      if (!response.ok) {
-        setError(data.error || "Gagal mengupload gambar.");
+      const text = await response.text();
+      let data: { error?: string; url?: string } | null = null;
+
+      if (text) {
+        try {
+          data = JSON.parse(text);
+        } catch {
+          data = null;
+        }
+      }
+
+      if (!response.ok || !data?.url) {
+        setError(data?.error || "Gagal mengupload gambar.");
         return;
       }
 
@@ -92,12 +102,13 @@ export default function AdminConsole() {
   }
 
   async function saveProduct() {
-    const trimmedName = form.name.trim();
-    const trimmedDescription = form.description.trim();
-    const price = Number(form.price);
+    const trimmedName = (form.name ?? "").trim();
+    const trimmedCategory = (form.category ?? "").trim();
+    const trimmedDescription = (form.description ?? "").trim();
+    const price = Number(form.price ?? 0);
 
-    if (!trimmedName || !trimmedDescription || Number.isNaN(price) || price <= 0) {
-      setError("Nama, deskripsi, dan harga harus diisi dengan benar.");
+    if (!trimmedName || !trimmedCategory || !Number.isFinite(price) || price <= 0) {
+      setError("Nama, kategori, dan harga harus diisi dengan benar.");
       return;
     }
 
@@ -109,6 +120,7 @@ export default function AdminConsole() {
     const payload = {
       ...form,
       name: trimmedName,
+      category: trimmedCategory,
       description: trimmedDescription,
       price,
       id: selectedId ?? undefined,
@@ -123,10 +135,13 @@ export default function AdminConsole() {
       });
 
       let data: { error?: string; message?: string } | null = null;
-      try {
-        data = await response.json();
-      } catch (jsonErr) {
-        console.error("Failed to parse JSON response:", jsonErr);
+      const text = await response.text();
+      if (text) {
+        try {
+          data = JSON.parse(text);
+        } catch (jsonErr) {
+          console.error("Failed to parse JSON response:", jsonErr);
+        }
       }
 
       if (response.ok) {

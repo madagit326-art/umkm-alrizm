@@ -1,15 +1,14 @@
 import ProductSection from "@/components/ProductSection";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
-import TopSellersHero from "@/components/TopSellersHero";
 
 export default function HomePage() {
   return (
     <main className="page-shell">
       <Navbar />
 
-      <section className="hero-section">
-        <div className="hero-copy">
+      <section className="hero-section hero-section--clean">
+        <div className="hero-copy hero-copy--centered">
           <p className="eyebrow">LET'S SHOP</p>
           <h1>Curated Sustainable Style</h1>
           <p className="lead">Where modern style meets organic beauty. Explore our curated collection of artisanal necklaces, rings, bracelets, and anklets.</p>
@@ -17,8 +16,6 @@ export default function HomePage() {
             <a href="https://wa.me/6288987405531?text=Halo%20Alrizm%2C%20saya%20ingin%20menanyakan%20tentang%20produk%20Anda" className="button primary" target="_blank" rel="noreferrer">Hubungi Kami</a>
           </div>
         </div>
-
-        <TopSellersHero />
       </section>
 
       <section className="collection-section">

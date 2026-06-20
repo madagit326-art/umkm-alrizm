@@ -1,25 +1,81 @@
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import { query } from "@/lib/db";
+import type { Product } from "@/lib/types";
 import { notFound } from "next/navigation";
 
 type Props = {
   params: { id: string };
 };
 
+const fallbackProducts: Product[] = [
+  {
+    id: 1,
+    name: "Macrame Bracelet Tiger Eyes Stone",
+    category: "Bracelet",
+    price: 150000,
+    description: "Gelangan tangan makrame dengan batu tiger eyes, cocok untuk gaya boho.",
+    image: "/placeholder.svg",
+    highlight: "Best Seller",
+  },
+  {
+    id: 2,
+    name: "Handcrafted Necklace",
+    category: "Necklace",
+    price: 175000,
+    description: "Kalung handmade dengan desain minimalis, ideal untuk sehari-hari.",
+    image: "/placeholder.svg",
+    highlight: "Populer",
+  },
+  {
+    id: 3,
+    name: "Beaded Bracelet - Ocean",
+    category: "Bracelet",
+    price: 95000,
+    description: "Gelang manik-manik tema laut.",
+    image: "/placeholder.svg",
+    highlight: "Featured",
+  },
+  {
+    id: 4,
+    name: "Silver Minimal Necklace",
+    category: "Necklace",
+    price: 125000,
+    description: "Kalung silver sederhana untuk daily wear.",
+    image: "/placeholder.svg",
+  },
+];
+
 export default async function ProductDetailPage({ params }: Props) {
   const productId = Number(params.id);
-  const products = await query("SELECT * FROM products WHERE id = ?", [productId]);
-  const product = Array.isArray(products) ? (products as any[])[0] : null;
+  let product: Product | null = null;
+  let related: Product[] = [];
 
-  if (!product) {
-    notFound();
+  try {
+    const products = await query<Product>("SELECT * FROM products WHERE id = ?", [productId]);
+    product = products[0] ?? null;
+
+    if (product) {
+      related = await query<Product>(
+        "SELECT * FROM products WHERE LOWER(category) = LOWER(?) AND id != ? ORDER BY id DESC LIMIT 3",
+        [product.category, productId]
+      );
+    }
+  } catch (error) {
+    product = fallbackProducts.find((item) => item.id === productId) ?? null;
+    if (product) {
+      const productCategory = product.category;
+      related = fallbackProducts
+        .filter(
+          (item) => item.category === productCategory && item.id !== productId
+        )
+        .slice(0, 3);
+    }
   }
 
-  const related = await query(
-    "SELECT * FROM products WHERE LOWER(category) = LOWER(?) AND id != ? ORDER BY id DESC LIMIT 3",
-    [product.category, productId]
-  );
+  if (!product) {
+    return notFound();
+  }
 
   const whatsappPhone = process.env.NEXT_PUBLIC_WHATSAPP_NUMBER || "6288987405531";
   const whatsappMessage = encodeURIComponent(
@@ -87,7 +143,7 @@ export default async function ProductDetailPage({ params }: Props) {
             <div className="related-section">
               <h2>You May Also Like</h2>
               <div className="related-grid">
-                {related.map((item: any) => (
+                {related.map((item) => (
                   <a key={item.id} href={`/product/${item.id}`} className="related-card">
                     <img src={item.image || "https://via.placeholder.com/320x240"} alt={item.name} />
                     <div>
