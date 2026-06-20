@@ -12,7 +12,12 @@ const allowedMimeTypes = new Set([
 const maxFileSize = 5 * 1024 * 1024;
 
 function hasBlobCredentials() {
-  return false;
+  return Boolean(
+    process.env.BLOB_READ_WRITE_TOKEN ||
+    process.env.BLOB_TOKEN ||
+    process.env.VERCEL_OIDC_TOKEN ||
+    process.env.BLOB_STORE_ID
+  );
 }
 export async function POST(request: Request) {
   try {
@@ -44,6 +49,9 @@ export async function POST(request: Request) {
     }
 
     if (hasBlobCredentials()) {
+      console.log("=== BLOB DEBUG ===");
+      console.log("BLOB_READ_WRITE_TOKEN:", !!process.env.BLOB_READ_WRITE_TOKEN);
+      console.log("BLOB_STORE_ID:", !!process.env.BLOB_STORE_ID);
       const blob = await put(
         `${Date.now()}-${file.name.replace(/[^a-zA-Z0-9._-]/g, "_")}`,
         file,
