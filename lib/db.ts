@@ -1,4 +1,6 @@
 import { Pool } from "pg";
+console.log("=== POSTGRES DB.TS LOADED ===");
+console.log("DATABASE_URL EXISTS:", !!process.env.DATABASE_URL);
 
 const env = process.env;
 const connectionString = env.DATABASE_URL || env.POSTGRES_URL || env.POSTGRES_PRISMA_URL;
@@ -8,6 +10,11 @@ function isEnabled(value?: string) {
 }
 
 function getPool() {
+  console.log("=== CREATING POSTGRES POOL ===");
+console.log(
+  "CONNECTION PREFIX:",
+  connectionString ? connectionString.substring(0, 30) : "NO_CONNECTION"
+);
   if (!connectionString) {
     throw new Error(
       "DATABASE_URL belum diatur. Isi connection string Supabase di file .env.local atau variabel environment."
