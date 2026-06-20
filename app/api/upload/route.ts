@@ -56,7 +56,7 @@ export async function POST(request: Request) {
         `${Date.now()}-${file.name.replace(/[^a-zA-Z0-9._-]/g, "_")}`,
         file,
         {
-          access: "private",
+          access: "public",
           contentType: file.type,
           addRandomSuffix: true,
         }
