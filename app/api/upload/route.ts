@@ -1,3 +1,6 @@
+console.log("BLOB_READ_WRITE_TOKEN exists:", !!process.env.BLOB_READ_WRITE_TOKEN);
+console.log("BLOB_STORE_ID exists:", !!process.env.BLOB_STORE_ID);
+
 import { NextResponse } from "next/server";
 import { promises as fs } from "fs";
 import path from "path";
