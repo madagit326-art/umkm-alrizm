@@ -1,7 +1,5 @@
 import { NextResponse } from "next/server";
-import { promises as fs } from "fs";
-import path from "path";
-import { put } from "@vercel/blob";
+import { supabase } from "@/lib/supabase";
 
 const allowedMimeTypes = new Set([
   "image/jpeg",
@@ -9,16 +7,9 @@ const allowedMimeTypes = new Set([
   "image/webp",
   "image/gif",
 ]);
+
 const maxFileSize = 5 * 1024 * 1024;
 
-function hasBlobCredentials() {
-  return Boolean(
-    process.env.BLOB_READ_WRITE_TOKEN ||
-    process.env.BLOB_TOKEN ||
-    process.env.VERCEL_OIDC_TOKEN ||
-    process.env.BLOB_STORE_ID
-  );
-}
 export async function POST(request: Request) {
   try {
     const formData = await request.formData();
@@ -33,10 +24,7 @@ export async function POST(request: Request) {
 
     if (!allowedMimeTypes.has(file.type)) {
       return NextResponse.json(
-        {
-          error:
-            "Format file tidak didukung. Gunakan JPG, PNG, WEBP, atau GIF.",
-        },
+        { error: "Format file tidak didukung." },
         { status: 400 }
       );
     }
@@ -48,41 +36,37 @@ export async function POST(request: Request) {
       );
     }
 
-    if (hasBlobCredentials()) {
-      console.log("=== BLOB DEBUG ===");
-      console.log("BLOB_READ_WRITE_TOKEN:", !!process.env.BLOB_READ_WRITE_TOKEN);
-      console.log("BLOB_STORE_ID:", !!process.env.BLOB_STORE_ID);
-      const blob = await put(
-        `${Date.now()}-${file.name.replace(/[^a-zA-Z0-9._-]/g, "_")}`,
-        file,
-        {
-          access: "public",
-          contentType: file.type,
-          addRandomSuffix: true,
-        }
-      );
+    const fileName =
+      Date.now() +
+      "-" +
+      file.name.replace(/[^a-zA-Z0-9._-]/g, "_");
 
-      return NextResponse.json({ url: blob.url });
+    const buffer = Buffer.from(await file.arrayBuffer());
+
+    const { error } = await supabase.storage
+      .from("products")
+      .upload(fileName, buffer, {
+        contentType: file.type,
+        upsert: false,
+      });
+
+    if (error) {
+      throw error;
     }
 
-    const fileName = file.name || `image-${Date.now()}`;
-    const safeName = `${Date.now()}-${fileName.replace(/[^a-zA-Z0-9._-]/g, "_")}`;
-    const uploadDir = path.join(process.cwd(), "public", "uploads");
+    const { data } = supabase.storage
+      .from("products")
+      .getPublicUrl(fileName);
 
-    await fs.mkdir(uploadDir, { recursive: true });
-    const buffer = Buffer.from(await file.arrayBuffer());
-    const filePath = path.join(uploadDir, safeName);
-    await fs.writeFile(filePath, buffer);
-
-    return NextResponse.json({ url: `/uploads/${safeName}` });
-  } catch (err) {
+    return NextResponse.json({
+      url: data.publicUrl,
+    });
+  } catch (err: any) {
     console.error("Upload error:", err);
+
     return NextResponse.json(
       {
-        error:
-          err instanceof Error
-            ? err.message
-            : "Gagal menyimpan file gambar.",
+        error: err.message || "Upload gagal",
       },
       { status: 500 }
     );
