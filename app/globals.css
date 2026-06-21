@@ -704,12 +704,12 @@ a {
 
 .card {
   background: #fff;
-  border-radius: 1.15rem;
+  border-radius: 1rem;
   overflow: hidden;
-  box-shadow: 0 14px 32px rgba(15, 23, 42, 0.08);
-  transition: transform 0.25s ease, box-shadow 0.25s ease;
+  box-shadow: 0 10px 22px rgba(15, 23, 42, 0.06);
+  transition: transform 0.22s ease, box-shadow 0.22s ease;
   position: relative;
-  border: 1px solid #eef3fb;
+  border: 1px solid #e7eef8;
   display: flex;
   flex-direction: column;
   min-width: 0;
@@ -881,30 +881,31 @@ a {
 }
 
 .card:hover {
-  box-shadow: 0 18px 38px rgba(15, 23, 42, 0.12);
-  transform: translateY(-3px);
+  box-shadow: 0 16px 32px rgba(15, 23, 42, 0.1);
+  transform: translateY(-2px);
 }
 
 .card-media {
   width: 100%;
   aspect-ratio: 1 / 1;
   overflow: hidden;
-  background: #f5f7fb;
-  border-radius: 0.9rem 0.9rem 0 0;
+  background: #f7f9fc;
+  border-radius: 0.95rem 0.95rem 0 0;
 }
 
 .card img {
   width: 100%;
   aspect-ratio: 1 / 1;
   object-fit: cover;
-  border-radius: 1.35rem;
+  display: block;
+  border-radius: 0;
 }
 
 .card > div {
-  padding: 0.95rem 1rem 1rem;
+  padding: 0.9rem 0.95rem 1rem;
   display: flex;
   flex-direction: column;
-  gap: 0.25rem;
+  gap: 0.3rem;
   flex: 1;
 }
 
@@ -944,35 +945,36 @@ a {
 
 .product-price {
   font-weight: 700;
-  color: var(--primary-blue);
-  font-size: clamp(0.88rem, 0.98vw, 0.98rem);
+  color: #0f172a;
+  font-size: clamp(0.9rem, 1vw, 1rem);
   margin-top: auto;
 }
 
 .badge {
   display: inline-block;
-  background: #f5f7fb;
-  color: var(--primary-blue);
+  background: #eef5ff;
+  color: #1d4ed8;
   padding: 0.18rem 0.5rem;
   border-radius: 999px;
   font-size: 0.68rem;
   font-weight: 700;
   text-transform: uppercase;
-  margin-bottom: 0.3rem;
+  margin-bottom: 0.15rem;
   letter-spacing: 0.04em;
 }
 
 .card-tag {
   position: absolute;
-  top: 1rem;
-  right: 1rem;
-  background: #ff6b6b;
-  color: white;
-  padding: 0.5rem 1rem;
-  border-radius: 0.5rem;
-  font-size: 0.85rem;
-  font-weight: 600;
+  top: 0.9rem;
+  right: 0.9rem;
+  background: #fff7ed;
+  color: #c2410c;
+  padding: 0.45rem 0.7rem;
+  border-radius: 999px;
+  font-size: 0.76rem;
+  font-weight: 700;
   z-index: 10;
+  border: 1px solid #fed7aa;
 }
 
 .small-feature-grid {
@@ -999,6 +1001,10 @@ a {
   height: 100%;
   object-fit: cover;
   display: block;
+}
+
+.small-card > div {
+  padding-top: 0.8rem;
 }
 
 /* Featured Panel */
