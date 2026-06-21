@@ -1,7 +1,4 @@
 import { Pool } from "pg";
-console.log("=== POSTGRES DB.TS LOADED ===");
-console.log("DATABASE_URL EXISTS:", !!process.env.DATABASE_URL);
-
 const env = process.env;
 const connectionString = env.DATABASE_URL || env.POSTGRES_URL || env.POSTGRES_PRISMA_URL;
 
@@ -10,11 +7,6 @@ function isEnabled(value?: string) {
 }
 
 function getPool() {
-  console.log("=== CREATING POSTGRES POOL ===");
-console.log(
-  "CONNECTION PREFIX:",
-  connectionString ? connectionString.substring(0, 30) : "NO_CONNECTION"
-);
   if (!connectionString) {
     throw new Error(
       "DATABASE_URL belum diatur. Isi connection string Supabase di file .env.local atau variabel environment."
@@ -26,17 +18,14 @@ console.log(
       "DATABASE_URL masih memakai placeholder dari contoh. Ganti dengan connection string asli dari Supabase sebelum menjalankan aplikasi."
     );
   }
-
-  const maskedConnectionString = connectionString.replace(/:([^:@]+)@/, ":***@");
-  console.error("DB connection string preview:", maskedConnectionString);
-
+  
   try {
-    new URL(connectionString);
-  } catch {
-    throw new Error(
-      "DATABASE_URL tidak valid. Gunakan format postgres://user:password@host:5432/database"
-    );
-  }
+  new URL(connectionString);
+} catch {
+  throw new Error(
+    "DATABASE_URL tidak valid. Gunakan format postgres://user:password@host:5432/database"
+  );
+}
 
   return new Pool({
     connectionString,

@@ -1,6 +1,3 @@
-console.log("=== API PRODUCTS VERSION SUPABASE ===");
-console.log("DATABASE_URL EXISTS:", !!process.env.DATABASE_URL);
-
 import { NextResponse } from "next/server";
 import { query } from "@/lib/db";
 import type { Product } from "@/lib/types";
