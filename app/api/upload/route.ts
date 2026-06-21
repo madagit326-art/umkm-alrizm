@@ -1,5 +1,5 @@
 import { NextResponse } from "next/server";
-import { supabase } from "@/lib/supabase";
+import { getSupabaseClient } from "@/lib/supabase";
 
 const allowedMimeTypes = new Set([
   "image/jpeg",
@@ -36,6 +36,17 @@ export async function POST(request: Request) {
       );
     }
 
+    const supabase = getSupabaseClient();
+    if (!supabase) {
+      return NextResponse.json(
+        {
+          error:
+            "Konfigurasi Supabase belum lengkap. Isi NEXT_PUBLIC_SUPABASE_URL dan SUPABASE_SERVICE_ROLE_KEY.",
+        },
+        { status: 500 }
+      );
+    }
+
     const fileName =
       Date.now() +
       "-" +
@@ -54,9 +65,7 @@ export async function POST(request: Request) {
       throw error;
     }
 
-    const { data } = supabase.storage
-      .from("products")
-      .getPublicUrl(fileName);
+    const { data } = supabase.storage.from("products").getPublicUrl(fileName);
 
     return NextResponse.json({
       url: data.publicUrl,

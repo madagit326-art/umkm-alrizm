@@ -1,8 +1,27 @@
+"use client";
+
+import { useEffect, useState } from "react";
 import ProductSection from "@/components/ProductSection";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
+import type { Product } from "@/lib/types";
 
 export default function HomePage() {
+  const [products, setProducts] = useState<Product[]>([]);
+
+  useEffect(() => {
+    fetch("/api/products")
+      .then((res) => res.json())
+      .then((data) => {
+        if (Array.isArray(data)) {
+          setProducts(data);
+        }
+      })
+      .catch(() => setProducts([]));
+  }, []);
+
+  const arrivals = products.slice(0, 4);
+
   return (
     <main className="page-shell">
       <Navbar />
@@ -46,12 +65,56 @@ export default function HomePage() {
       </section>
 
       <section className="new-arrivals">
-        <h2>NEW ARRIVALS</h2>
+        <div className="new-arrivals-header">
+          <p className="eyebrow">New Arrivals</p>
+          <h2>Fresh picks for your collection</h2>
+        </div>
         <div className="mosaic-grid">
-          <div className="mosaic-large" />
-          <div className="mosaic-small" />
-          <div className="mosaic-small" />
-          <div className="mosaic-small" />
+          {arrivals.length > 0 ? (
+            arrivals.map((product, index) => (
+              <a
+                key={product.id ?? index}
+                href={`/product/${product.id}`}
+                className={`mosaic-card ${
+                  index === 0 ? "mosaic-card--large" : "mosaic-card--small"
+                } ${
+                  index === 1 ? "mosaic-card--top" : ""
+                } ${index === 2 ? "mosaic-card--middle" : ""} ${
+                  index === 3 ? "mosaic-card--bottom" : ""
+                }`}
+                style={{
+                  backgroundImage: `url(${product.image || "/placeholder.svg"})`,
+                  backgroundSize: "cover",
+                  backgroundPosition: "center",
+                }}
+              >
+                <div className={index === 0 ? "mosaic-overlay" : "mosaic-overlay mosaic-overlay--compact"}>
+                  <span>{product.highlight || "New Arrival"}</span>
+                  <h3>{product.name}</h3>
+                  {index === 0 ? (
+                    <p>{product.description || "Temukan koleksi terbaru yang siap mempercantik penampilan Anda."}</p>
+                  ) : null}
+                </div>
+              </a>
+            ))
+          ) : (
+            [0, 1, 2, 3].map((index) => (
+              <a
+                key={index}
+                href="#products"
+                className={`mosaic-card ${
+                  index === 0 ? "mosaic-card--large" : "mosaic-card--small"
+                } ${index === 1 ? "mosaic-card--top" : ""} ${
+                  index === 2 ? "mosaic-card--middle" : ""
+                } ${index === 3 ? "mosaic-card--bottom" : ""}`}
+              >
+                <div className={index === 0 ? "mosaic-overlay" : "mosaic-overlay mosaic-overlay--compact"}>
+                  <span>New Arrival</span>
+                  <h3>Loading product...</h3>
+                </div>
+              </a>
+            ))
+          )}
         </div>
       </section>
 
