@@ -85,10 +85,56 @@ export default function ProductSection() {
       </div>
       <div className="featured-wrapper">
         <div className="featured-panel">
-          <p className="eyebrow">Featured Product</p>
-          <h2>Selected Picks</h2>
-          <p>Produk pilihan yang direkomendasikan oleh tim kami.</p>
+  <div className="featured-content">
+    <p className="eyebrow">Featured Product</p>
+
+    <h2>Selected Picks</h2>
+
+    <div className="title-line"></div>
+
+    <p className="featured-desc">
+      Produk pilihan yang direkomendasikan oleh tim kami dengan kualitas
+      terbaik dan desain eksklusif untuk melengkapi penampilan Anda.
+    </p>
+
+    <div className="feature-list">
+      <div className="feature-item">
+        <div className="feature-icon">✓</div>
+        <div>
+          <strong>Kualitas Premium</strong>
+          <span>Material berkualitas tinggi dan tahan lama.</span>
         </div>
+      </div>
+
+      <div className="feature-item">
+        <div className="feature-icon">★</div>
+        <div>
+          <strong>Desain Eksklusif</strong>
+          <span>Dirancang dengan detail dan elegan.</span>
+        </div>
+      </div>
+
+      <div className="feature-item">
+        <div className="feature-icon">📦</div>
+        <div>
+          <strong>Packaging Premium</strong>
+          <span>Dilengkapi kemasan eksklusif yang menjaga kualitas produk hingga sampai ke tangan Anda.</span>
+        </div>
+      </div>
+    </div>
+
+    <a href="/collection/all" className="featured-btn">
+      ORDER NOW
+    </a>
+  </div>
+
+  <div className="featured-showcase">
+    <img
+      src={featured[0]?.image || "/placeholder.jpg"}
+      alt="Featured Product"
+    />
+  </div>
+</div>
         <div className="small-feature-grid">
           {error ? (
             <p style={{ color: "#dc2626" }}>{error}</p>
