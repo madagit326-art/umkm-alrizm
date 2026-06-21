@@ -99,8 +99,7 @@ export default function ProductSection() {
     <div className="title-line"></div>
 
     <p className="featured-desc">
-      Produk pilihan yang direkomendasikan oleh tim kami dengan kualitas
-      terbaik dan desain eksklusif untuk melengkapi penampilan Anda.
+      Koleksi unggulan yang dipilih dengan detail, kualitas premium, dan desain elegan untuk mempercantik setiap momen Anda.
     </p>
 
     <div className="feature-list">

@@ -9,6 +9,7 @@ const allowedMimeTypes = new Set([
 ]);
 
 const maxFileSize = 5 * 1024 * 1024;
+const bucketName = process.env.SUPABASE_STORAGE_BUCKET || "products";
 
 export async function POST(request: Request) {
   try {
@@ -41,7 +42,7 @@ export async function POST(request: Request) {
       return NextResponse.json(
         {
           error:
-            "Konfigurasi Supabase belum lengkap. Isi NEXT_PUBLIC_SUPABASE_URL dan SUPABASE_SERVICE_ROLE_KEY.",
+            "Konfigurasi Supabase belum lengkap. Isi NEXT_PUBLIC_SUPABASE_URL/SUPABASE_URL dan SUPABASE_SERVICE_ROLE_KEY/SUPABASE_SERVICE_ROLE.",
         },
         { status: 500 }
       );
@@ -55,7 +56,7 @@ export async function POST(request: Request) {
     const buffer = Buffer.from(await file.arrayBuffer());
 
     const { error } = await supabase.storage
-      .from("products")
+      .from(bucketName)
       .upload(fileName, buffer, {
         contentType: file.type,
         upsert: false,
@@ -65,7 +66,7 @@ export async function POST(request: Request) {
       throw error;
     }
 
-    const { data } = supabase.storage.from("products").getPublicUrl(fileName);
+    const { data } = supabase.storage.from(bucketName).getPublicUrl(fileName);
 
     return NextResponse.json({
       url: data.publicUrl,

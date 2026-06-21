@@ -24,8 +24,8 @@ export default function Navbar() {
 
         <nav className="nav-left" aria-label="Primary navigation">
           <a href="/">Home</a>
-          <a href="#about">About Us</a>
-          <a href="#products">New Arrivals</a>
+          <a href="/#about">About Us</a>
+          <a href="/#products">New Arrivals</a>
         </nav>
 
         <div className="brand">
@@ -39,8 +39,8 @@ export default function Navbar() {
 
       <div id="mobile-menu-panel" className={`mobile-menu-panel ${menuOpen ? "open" : ""}`}>
         <a href="/" onClick={() => setMenuOpen(false)}>Home</a>
-        <a href="#about" onClick={() => setMenuOpen(false)}>About Us</a>
-        <a href="#products" onClick={() => setMenuOpen(false)}>New Arrivals</a>
+        <a href="/#about" onClick={() => setMenuOpen(false)}>About Us</a>
+        <a href="/#products" onClick={() => setMenuOpen(false)}>New Arrivals</a>
       </div>
     </header>
   );

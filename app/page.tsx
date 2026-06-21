@@ -21,6 +21,7 @@ export default function HomePage() {
   }, []);
 
   const arrivals = products.slice(0, 4);
+  const featuredImage = products.find((product) => product.image)?.image || "/placeholder.svg";
 
   return (
     <main className="page-shell">
@@ -51,16 +52,22 @@ export default function HomePage() {
 
       <section className="handcrafted-section">
         <div className="handcrafted-left">
-          <div className="arch-large" />
+          <div className="handcrafted-media">
+            <img src={featuredImage} alt="Handcrafted jewelry piece" />
+            <div className="handcrafted-media-caption">
+              <span>Featured Piece</span>
+            </div>
+          </div>
         </div>
         <div className="handcrafted-right">
+          <span className="handcrafted-badge">Crafted by hand</span>
           <h2>Handcrafted Pieces, Meticulously Designed</h2>
           <p>
             Produk perhiasan handmade kami dirancang dengan material pilihan dan dikerjakan
             dengan teliti oleh pengrajin lokal yang berpengalaman. Setiap piece adalah karya unik
             yang mencerminkan dedikasi dan passion kami terhadap keahlian tradisional.
           </p>
-          <a className="button primary" href="#products">ORDER NOW</a>
+          <a className="button primary crafted-button" href="#products">ORDER NOW</a>
         </div>
       </section>
 
