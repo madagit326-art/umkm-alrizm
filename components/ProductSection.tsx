@@ -65,6 +65,12 @@ export default function ProductSection() {
     ? latestCandidates.slice(0, visibleCount)
     : filteredProducts.slice(0, visibleCount);
 
+  const whatsappPhone = process.env.NEXT_PUBLIC_WHATSAPP_NUMBER || "6288987405531";
+  const whatsappMessage = encodeURIComponent(
+    "Halo Alrizm, saya ingin menanyakan tentang produk Anda."
+  );
+  const whatsappUrl = `https://wa.me/${whatsappPhone}?text=${whatsappMessage}`;
+
   function loadMore() {
     setVisibleCount((v) => v + 8);
   }
@@ -123,7 +129,7 @@ export default function ProductSection() {
       </div>
     </div>
 
-    <a href="/collection/all" className="featured-btn">
+    <a href={whatsappUrl} className="featured-btn" target="_blank" rel="noreferrer">
       ORDER NOW
     </a>
   </div>
