@@ -1,39 +1,22 @@
 export default function Footer() {
+  const whatsappNumber = process.env.NEXT_PUBLIC_WHATSAPP_NUMBER || "6288987405531";
+  const whatsappUrl = `https://wa.me/${whatsappNumber}?text=${encodeURIComponent("Halo Alrizm, saya ingin memesan produk dari toko Anda.")}`;
+
   return (
-    <footer style={{ marginTop: "3rem" }}>
-      <div style={{ 
-        background: "linear-gradient(135deg, #e6f0ff 0%, #eef6ff 100%)", 
-        padding: "3rem 2rem", 
-        borderRadius: "1.5rem",
-        textAlign: "center",
-        margin: "2rem"
-      }}>
-        <h3 style={{ 
-          margin: 0, 
-          fontSize: "1.8rem",
-          color: "#0a1f47",
-          fontWeight: "700"
-        }}>ORDER NOW</h3>
-        <p style={{ 
-          marginTop: "0.5rem",
-          marginBottom: "1.5rem",
-          color: "#64748b",
-          fontSize: "1rem"
-        }}>Pesan sekarang dan dapatkan penawaran khusus untuk koleksi eksklusif kami.</p>
-        <a className="button primary" href="#" style={{
-          display: "inline-block"
-        }}>ORDER & PAY</a>
+    <footer className="site-footer">
+      <div className="footer-cta">
+        <h3>ORDER NOW</h3>
+        <p>
+          Pesan sekarang dan dapatkan penawaran khusus untuk koleksi eksklusif kami.
+        </p>
+        <a className="button primary" href={whatsappUrl} target="_blank" rel="noreferrer">
+          ORDER &amp; PAY
+        </a>
       </div>
 
-      <div style={{ 
-        marginTop: "2rem", 
-        textAlign: "center", 
-        color: "#64748b",
-        padding: "2rem",
-        borderTop: "1px solid #e2e8f0"
-      }}>
-        <p style={{ margin: "0.5rem 0" }}>© 2026 UMKM Alrizm — All rights reserved.</p>
-        <p style={{ margin: "0.5rem 0", fontSize: "0.9rem" }}>Crafted with ❤️ for sustainable fashion lovers</p>
+      <div className="footer-bottom">
+        <p>© 2026 UMKM Alrizm — All rights reserved.</p>
+        <p>Crafted with ❤️ for sustainable fashion lovers</p>
       </div>
     </footer>
   );
