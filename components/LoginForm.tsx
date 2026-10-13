@@ -66,6 +66,12 @@ export default function LoginForm() {
           >
             {loading ? "Loading..." : "Login"}
           </button>
+
+          <div style={{ marginTop: "1.25rem", textAlign: "center" }}>
+            <a href="/" style={{ color: "#1e5a96", fontSize: "0.9rem", textDecoration: "none", fontWeight: 600 }}>
+              ← Kembali ke Beranda Toko
+            </a>
+          </div>
         </form>
       </div>
 
