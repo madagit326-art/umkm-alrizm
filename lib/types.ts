@@ -12,3 +12,18 @@ export interface Product {
   image6?: string;
   highlight?: string;
 }
+
+export interface Review {
+  id?: number;
+  product_id: number;
+  customer_name: string;
+  rating: number;
+  comment: string;
+  created_at?: string;
+}
+
+export interface ReviewStats {
+  averageRating: number;
+  totalReviews: number;
+  ratingCounts: { [stars: number]: number };
+}

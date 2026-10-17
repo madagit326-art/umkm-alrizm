@@ -2,6 +2,7 @@ import Link from "next/link";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import ProductGallery from "@/components/ProductGallery";
+import ProductReviews from "@/components/ProductReviews";
 import { query } from "@/lib/db";
 import type { Product } from "@/lib/types";
 import { notFound } from "next/navigation";
@@ -126,6 +127,17 @@ export default async function ProductDetailPage({ params }: Props) {
 
               <h1 className="detail-title">{product.name}</h1>
 
+              <a href="#reviews-section" className="detail-rating-pill" title="Lihat Ulasan Pembeli">
+                <div className="bestseller-rating">
+                  <span className="star-filled">★</span>
+                  <span className="star-filled">★</span>
+                  <span className="star-filled">★</span>
+                  <span className="star-filled">★</span>
+                  <span className="star-filled">★</span>
+                </div>
+                <span className="rating-pill-text">Ulasan &amp; Bintang Pembeli</span>
+              </a>
+
               <div className="detail-price-box">
                 <span className="price-label">Harga Produk</span>
                 <p className="detail-price">
@@ -201,6 +213,12 @@ export default async function ProductDetailPage({ params }: Props) {
               </div>
             </div>
           </div>
+
+          {/* Customer Reviews & Ratings Section */}
+          <ProductReviews
+            productId={product.id || productId}
+            productName={product.name}
+          />
 
           {/* Related Products Grid */}
           {Array.isArray(related) && related.length > 0 && (

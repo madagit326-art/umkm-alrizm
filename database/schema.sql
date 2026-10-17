@@ -38,3 +38,12 @@ INSERT INTO products (name, category, price, description, image, highlight) VALU
 ('Locket Necklace Vintage', 'Necklace', 210000, 'Kalung locket dengan sentuhan vintage.', 'https://via.placeholder.com/640x480', ''),
 ('Chevron Ring', 'Ring', 68000, 'Cincin motif chevron yang modern.', 'https://via.placeholder.com/640x480', ''),
 ('Feather Earrings', 'Earrings', 48000, 'Anting motif bulu yang ringan.', 'https://via.placeholder.com/640x480', 'Featured');
+
+CREATE TABLE IF NOT EXISTS reviews (
+  id BIGSERIAL PRIMARY KEY,
+  product_id BIGINT NOT NULL,
+  customer_name VARCHAR(150) NOT NULL,
+  rating INT NOT NULL CHECK (rating >= 1 AND rating <= 5),
+  comment TEXT NOT NULL,
+  created_at TIMESTAMPTZ DEFAULT NOW()
+);
