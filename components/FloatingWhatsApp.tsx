@@ -30,8 +30,8 @@ export default function FloatingWhatsApp() {
         <svg
           className="floating-wa-icon"
           viewBox="0 0 24 24"
-          width="28"
-          height="28"
+          width="22"
+          height="22"
           fill="currentColor"
           aria-hidden="true"
         >
