@@ -171,7 +171,13 @@ export default async function CategoryPage({ params }: Props) {
           </div>
         ) : (
           <div className="empty-state">
-            <div className="empty-icon">💎</div>
+            <div className="empty-icon">
+              <svg viewBox="0 0 24 24" width="36" height="36" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
+                <path d="M6 3h12l4 6-10 13L2 9z" />
+                <path d="M11 3 8 9l4 13 4-13-3-6" />
+                <path d="M2 9h20" />
+              </svg>
+            </div>
             <h3>Belum Ada Produk di Kategori Ini</h3>
             <p>
               Saat ini belum ada produk yang tersedia untuk kategori {category}.

@@ -1507,8 +1507,16 @@ textarea {
 }
 
 .advantage-icon {
-  font-size: 1.4rem;
+  width: 36px;
+  height: 36px;
+  border-radius: var(--radius-full);
+  background: var(--blue-tint);
+  color: var(--blue-primary);
+  display: flex;
+  align-items: center;
+  justify-content: center;
   flex-shrink: 0;
+  border: 1px solid var(--blue-tint-border);
 }
 
 .advantage-item h4 {
