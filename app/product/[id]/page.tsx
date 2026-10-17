@@ -205,31 +205,54 @@ export default async function ProductDetailPage({ params }: Props) {
           {/* Related Products Grid */}
           {Array.isArray(related) && related.length > 0 && (
             <div className="related-section">
-              <div className="section-title">
-                <div>
-                  <span className="eyebrow">Rekomendasi Lainnya</span>
-                  <h2>Koleksi Terkait</h2>
-                </div>
+              <div className="section-divider-header" style={{ marginTop: "3.5rem", marginBottom: "2rem" }}>
+                <span className="divider-line" />
+                <h2 className="section-divider-title">KOLEKSI TERKAIT</h2>
+                <span className="divider-line" />
               </div>
-              <div className="related-grid">
+
+              <div className="bestseller-grid">
                 {related.map((item) => (
-                  <Link key={item.id} href={`/product/${item.id}`} className="card">
-                    {item.highlight && <span className="card-tag">{item.highlight}</span>}
-                    <div className="card-media">
+                  <div key={item.id} className="bestseller-card">
+                    {item.highlight && (
+                      <span className="card-badge-pill">{item.highlight}</span>
+                    )}
+
+                    <Link href={`/product/${item.id}`} className="bestseller-image-wrapper">
                       <img
                         src={item.image || "/placeholder.svg"}
                         alt={item.name}
                         loading="lazy"
+                        className="bestseller-image"
                       />
-                    </div>
-                    <div className="card-body">
-                      <span className="badge">{item.category}</span>
-                      <h3 className="card-title">{item.name}</h3>
-                      <p className="product-price">
+                    </Link>
+
+                    <div className="bestseller-content">
+                      <span className="bestseller-category">{item.category}</span>
+                      <h3 className="bestseller-name">
+                        <Link href={`/product/${item.id}`}>{item.name}</Link>
+                      </h3>
+                      <p className="bestseller-price">
                         Rp {Number(item.price).toLocaleString("id-ID")}
                       </p>
+
+                      <div className="bestseller-rating" aria-label="Rating 5 dari 5 bintang">
+                        <span className="star-filled">★</span>
+                        <span className="star-filled">★</span>
+                        <span className="star-filled">★</span>
+                        <span className="star-filled">★</span>
+                        <span className="star-filled">★</span>
+                      </div>
+
+                      <Link
+                        href={`/product/${item.id}`}
+                        className="bestseller-cart-btn"
+                        style={{ textAlign: "center", textDecoration: "none" }}
+                      >
+                        LIHAT DETAIL
+                      </Link>
                     </div>
-                  </Link>
+                  </div>
                 ))}
               </div>
             </div>
