@@ -5,16 +5,16 @@ import Link from "next/link";
 import type { Product } from "@/lib/types";
 
 const CATEGORIES = [
-  { id: "all", label: "Semua Koleksi" },
-  { id: "Bracelet", label: "Gelang (Bracelet)" },
-  { id: "Necklace", label: "Kalung (Necklace)" },
-  { id: "Earrings", label: "Anting (Earrings)" },
-  { id: "Ring", label: "Cincin (Ring)" },
+  { id: "all", label: "Semua Produk" },
+  { id: "Bracelet", label: "Gelang" },
+  { id: "Necklace", label: "Kalung" },
+  { id: "Ring", label: "Cincin" },
+  { id: "Earrings", label: "Anting" },
 ];
 
 export default function ProductSection() {
   const [products, setProducts] = useState<Product[]>([]);
-  const [visibleCount, setVisibleCount] = useState(8);
+  const [visibleCount, setVisibleCount] = useState(10);
   const [searchQuery, setSearchQuery] = useState("");
   const [selectedCategory, setSelectedCategory] = useState("all");
   const [loading, setLoading] = useState(true);
@@ -55,14 +55,12 @@ export default function ProductSection() {
   const filteredProducts = useMemo(() => {
     let result = products;
 
-    // Filter by Category
     if (selectedCategory !== "all") {
       result = result.filter(
         (p) => p.category?.toLowerCase() === selectedCategory.toLowerCase()
       );
     }
 
-    // Filter by Search query
     const query = searchQuery.trim().toLowerCase();
     if (query) {
       result = result.filter((product) => {
@@ -82,43 +80,48 @@ export default function ProductSection() {
     return result;
   }, [products, selectedCategory, searchQuery]);
 
-  // Featured candidates
-  const highlighted = filteredProducts.filter(
-    (p) => p.highlight && String(p.highlight).trim() !== ""
-  );
-  const featured = highlighted.length > 0 ? highlighted.slice(0, 4) : filteredProducts.slice(0, 4);
-
-  // Latest products
   const latest = filteredProducts.slice(0, visibleCount);
 
   function getWaLink(productName: string, price: number) {
-    const text = `Halo Alrizm, saya ingin memesan ${productName} (Rp ${Number(price).toLocaleString("id-ID")}). Apakah produk ini masih tersedia?`;
+    const text = `Halo Alrizm, saya ingin memesan ${productName} (Rp ${Number(price).toLocaleString("id-ID")}). Apakah masih tersedia?`;
     return `https://wa.me/${whatsappPhone}?text=${encodeURIComponent(text)}`;
   }
 
   function loadMore() {
-    setVisibleCount((v) => v + 8);
+    setVisibleCount((v) => v + 10);
   }
 
   return (
-    <section id="products" className="product-section">
-      {/* Search & Category Filter */}
-      <div className="product-filter-container">
-        <div className="search-bar">
-          <div className="search-icon-wrapper">
-            <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" strokeWidth="2">
-              <circle cx="11" cy="11" r="8" />
-              <line x1="21" y1="21" x2="16.65" y2="16.65" />
-            </svg>
-          </div>
+    <section id="products" className="best-sellers-section">
+      {/* Reference Header with Centered Line Divider */}
+      <div className="section-divider-header">
+        <div className="divider-line" />
+        <h2 className="section-divider-title">BEST SELLERS</h2>
+        <div className="divider-line" />
+        <a
+          href="#products"
+          onClick={() => {
+            setSelectedCategory("all");
+            setSearchQuery("");
+          }}
+          className="view-all-link"
+        >
+          VIEW ALL PRODUCTS →
+        </a>
+      </div>
+
+      {/* Search & Filter Pill Controls */}
+      <div className="catalog-controls">
+        <div className="search-pill-box">
+          <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" strokeWidth="2" className="search-icon">
+            <circle cx="11" cy="11" r="8" />
+            <line x1="21" y1="21" x2="16.65" y2="16.65" />
+          </svg>
           <input
             type="search"
             value={searchQuery}
-            onChange={(event) => {
-              setSearchQuery(event.target.value);
-              setVisibleCount(8);
-            }}
-            placeholder="Cari perhiasan, batu alam, gelang..."
+            onChange={(e) => setSearchQuery(e.target.value)}
+            placeholder="Cari perhiasan, batu alam, cincin..."
             aria-label="Cari produk"
           />
           {searchQuery && (
@@ -126,25 +129,23 @@ export default function ProductSection() {
               type="button"
               className="clear-search-btn"
               onClick={() => setSearchQuery("")}
-              aria-label="Hapus pencarian"
             >
               ✕
             </button>
           )}
         </div>
 
-        {/* Category Pills */}
-        <div className="category-pills" role="tablist" aria-label="Filter Kategori">
+        <div className="category-filter-tabs" role="tablist">
           {CATEGORIES.map((cat) => (
             <button
               key={cat.id}
               type="button"
               role="tab"
               aria-selected={selectedCategory === cat.id}
-              className={`category-pill ${selectedCategory === cat.id ? "active" : ""}`}
+              className={`filter-tab ${selectedCategory === cat.id ? "active" : ""}`}
               onClick={() => {
                 setSelectedCategory(cat.id);
-                setVisibleCount(8);
+                setVisibleCount(10);
               }}
             >
               {cat.label}
@@ -153,142 +154,11 @@ export default function ProductSection() {
         </div>
       </div>
 
-      {/* Featured Section (Shown when no search query or in full catalog mode) */}
-      {!searchQuery && selectedCategory === "all" && featured.length > 0 && (
-        <div className="featured-wrapper">
-          <div className="featured-panel">
-            <div className="featured-content">
-              <span className="eyebrow eyebrow--gold">Koleksi Terpilih</span>
-              <h2>Selected Artisan Picks</h2>
-              <div className="title-line" />
-              <p className="featured-desc">
-                Koleksi perhiasan handmade unggulan dengan material batu alam pilihan,
-                ditenun dengan teliti untuk sentuhan gaya alami yang mempesona.
-              </p>
-
-              <div className="feature-list">
-                <div className="feature-item">
-                  <div className="feature-icon">✨</div>
-                  <div>
-                    <strong>Material Pilihan</strong>
-                    <span>Batu alam alami & tali berkualitas tinggi tahan air.</span>
-                  </div>
-                </div>
-
-                <div className="feature-item">
-                  <div className="feature-icon">✋</div>
-                  <div>
-                    <strong>100% Buatan Tangan</strong>
-                    <span>Dikerjakan dengan dedikasi pengrajin berpengalaman.</span>
-                  </div>
-                </div>
-
-                <div className="feature-item">
-                  <div className="feature-icon">🎁</div>
-                  <div>
-                    <strong>Kemasan Eksklusif</strong>
-                    <span>Aman dan siap dijadikan hadiah berkesan untuk yang tersayang.</span>
-                  </div>
-                </div>
-              </div>
-
-              {featured[0] && (
-                <div className="featured-actions">
-                  <a
-                    href={getWaLink(featured[0].name, featured[0].price)}
-                    className="button primary featured-btn"
-                    target="_blank"
-                    rel="noreferrer"
-                  >
-                    <span>Pesan via WhatsApp</span>
-                  </a>
-                  <Link href={`/product/${featured[0].id}`} className="button secondary">
-                    Lihat Detail
-                  </Link>
-                </div>
-              )}
-            </div>
-
-            <div className="featured-showcase">
-              <div className="showcase-card">
-                <img
-                  src={featured[0]?.image || "/placeholder.svg"}
-                  alt={featured[0]?.name || "Featured Product"}
-                />
-                {featured[0] && (
-                  <div className="showcase-badge">
-                    <span className="badge-tag">{featured[0].highlight || "Featured"}</span>
-                    <h4>{featured[0].name}</h4>
-                    <p className="showcase-price">
-                      Rp {Number(featured[0].price).toLocaleString("id-ID")}
-                    </p>
-                  </div>
-                )}
-              </div>
-            </div>
-          </div>
-
-          {/* Small Feature Grid */}
-          {featured.slice(1, 3).length > 0 && (
-            <div className="small-feature-grid">
-              {featured.slice(1, 3).map((item) => (
-                <div key={item.id} className="card small-card">
-                  {item.highlight && <span className="card-tag">{item.highlight}</span>}
-                  <Link href={`/product/${item.id}`} className="card-media">
-                    <img src={item.image || "/placeholder.svg"} alt={item.name} />
-                  </Link>
-                  <div className="card-body">
-                    <span className="badge">{item.category}</span>
-                    <h4>
-                      <Link href={`/product/${item.id}`}>{item.name}</Link>
-                    </h4>
-                    <p className="product-price">
-                      Rp {Number(item.price).toLocaleString("id-ID")}
-                    </p>
-                    <div className="card-actions">
-                      <a
-                        href={getWaLink(item.name, item.price)}
-                        target="_blank"
-                        rel="noreferrer"
-                        className="button-sm button-wa"
-                      >
-                        Pesan
-                      </a>
-                      <Link href={`/product/${item.id}`} className="button-sm button-ghost">
-                        Detail
-                      </Link>
-                    </div>
-                  </div>
-                </div>
-              ))}
-            </div>
-          )}
-        </div>
-      )}
-
-      {/* Latest Products Heading */}
-      <div className="section-title">
-        <div>
-          <span className="eyebrow">
-            {selectedCategory === "all" ? "Katalog Toko" : selectedCategory}
-          </span>
-          <h2>
-            {selectedCategory === "all" ? "Semua Koleksi Perhiasan" : `Koleksi ${selectedCategory}`}
-          </h2>
-          <p className="section-subtitle">
-            Daftar lengkap karya kerajinan tangan kami yang siap dipesan.
-          </p>
-        </div>
-        <span className="product-count-badge">
-          {filteredProducts.length} Produk Tersedia
-        </span>
-      </div>
-
-      {/* Loading & Error States */}
+      {/* Loading & Error Messages */}
       {loading && (
-        <div className="loading-state">
-          <div className="spinner" />
-          <p>Memuat koleksi produk terbaik...</p>
+        <div className="loading-box">
+          <div className="spinner-blue" />
+          <p>Memuat koleksi terbaik...</p>
         </div>
       )}
 
@@ -298,49 +168,55 @@ export default function ProductSection() {
         </div>
       )}
 
-      {/* Products Grid */}
+      {/* Reference Card Grid (5/4 cols on PC, 3 on Tab, 2 on Mobile) */}
       {!loading && !error && (
-        <div className="product-grid">
+        <div className="bestseller-grid">
           {latest.map((item) => (
-            <div key={item.id} className="card">
-              {item.highlight && <span className="card-tag">{item.highlight}</span>}
-              <Link href={`/product/${item.id}`} className="card-media">
+            <div key={item.id} className="bestseller-card">
+              {item.highlight && (
+                <span className="card-badge-pill">{item.highlight}</span>
+              )}
+
+              <Link href={`/product/${item.id}`} className="bestseller-image-wrapper">
                 <img
                   src={item.image || "/placeholder.svg"}
                   alt={item.name}
                   loading="lazy"
+                  className="bestseller-image"
                 />
               </Link>
-              <div className="card-body">
-                <div className="card-header-row">
-                  <span className="badge">{item.category}</span>
-                </div>
-                <h3 className="card-title">
+
+              <div className="bestseller-content">
+                <span className="bestseller-category">{item.category}</span>
+                <h3 className="bestseller-name">
                   <Link href={`/product/${item.id}`}>{item.name}</Link>
                 </h3>
-                <p className="card-description">{item.description}</p>
-                <div className="card-bottom">
-                  <p className="product-price">
-                    Rp {Number(item.price).toLocaleString("id-ID")}
-                  </p>
-                  <div className="card-actions">
-                    <a
-                      href={getWaLink(item.name, item.price)}
-                      target="_blank"
-                      rel="noreferrer"
-                      className="button-sm button-wa"
-                      title="Pesan via WhatsApp"
-                    >
-                      Pesan via WA
-                    </a>
-                    <Link
-                      href={`/product/${item.id}`}
-                      className="button-sm button-ghost"
-                    >
-                      Detail
-                    </Link>
-                  </div>
+                <p className="bestseller-price">
+                  Rp {Number(item.price).toLocaleString("id-ID")}
+                </p>
+
+                {/* Star Rating from Reference Image */}
+                <div className="bestseller-rating" aria-label="Rating 5 dari 5 bintang">
+                  <span className="star-filled">★</span>
+                  <span className="star-filled">★</span>
+                  <span className="star-filled">★</span>
+                  <span className="star-filled">★</span>
+                  <span className="star-filled">★</span>
                 </div>
+
+                {/* Add to Cart / Order Button from Reference Image */}
+                <a
+                  href={getWaLink(item.name, item.price)}
+                  target="_blank"
+                  rel="noreferrer"
+                  className="bestseller-cart-btn"
+                  title="Pesan via WhatsApp"
+                >
+                  <svg viewBox="0 0 24 24" width="16" height="16" fill="currentColor">
+                    <path d="M.057 24l1.687-6.163c-1.041-1.804-1.588-3.849-1.587-5.946.003-6.556 5.338-11.891 11.893-11.891 3.181.001 6.167 1.24 8.413 3.488 2.245 2.248 3.481 5.236 3.48 8.414-.003 6.557-5.338 11.892-11.893 11.892-1.99-.001-3.951-.5-5.688-1.448l-6.305 1.654zm6.597-3.807c1.676.995 3.276 1.591 5.392 1.592 5.448 0 9.886-4.434 9.889-9.885.002-5.462-4.415-9.89-9.881-9.892-5.452 0-9.887 4.434-9.889 9.884-.001 2.225.651 3.891 1.746 5.634l-.999 3.648 3.742-.981zm11.387-5.464c-.074-.124-.272-.198-.57-.347-.297-.149-1.758-.868-2.031-.967-.272-.099-.47-.149-.669.149-.198.297-.768.967-.941 1.165-.173.198-.347.223-.644.074-.297-.149-1.255-.462-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.297-.347.446-.521.151-.172.2-.296.3-.495.099-.198.05-.372-.025-.521-.075-.148-.669-1.611-.916-2.206-.242-.579-.487-.501-.669-.51l-.57-.01c-.198 0-.52.074-.792.372s-1.04 1.016-1.04 2.479 1.065 2.876 1.213 3.074c.149.198 2.095 3.2 5.076 4.487.709.306 1.263.489 1.694.626.712.226 1.36.194 1.872.118.571-.085 1.758-.719 2.006-1.413.248-.695.248-1.29.173-1.414z" />
+                  </svg>
+                  <span>PESAN VIA WHATSAPP</span>
+                </a>
               </div>
             </div>
           ))}
@@ -349,12 +225,8 @@ export default function ProductSection() {
 
       {/* Empty State */}
       {!loading && !error && filteredProducts.length === 0 && (
-        <div className="empty-state">
-          <div className="empty-icon">🔍</div>
-          <h3>Tidak Ada Produk Ditemukan</h3>
-          <p>
-            Coba kata kunci lain atau pilih kategori yang berbeda untuk menemukan produk impian Anda.
-          </p>
+        <div className="empty-catalog">
+          <p>Tidak ada produk yang cocok dengan pencarian Anda.</p>
           <button
             type="button"
             className="button secondary"
@@ -363,16 +235,16 @@ export default function ProductSection() {
               setSelectedCategory("all");
             }}
           >
-            Reset Filter & Pencarian
+            Reset Filter
           </button>
         </div>
       )}
 
-      {/* Load More Button */}
+      {/* Load More */}
       {!loading && visibleCount < filteredProducts.length && (
-        <div className="load-more-wrapper">
-          <button type="button" className="button secondary load-more-btn" onClick={loadMore}>
-            Tampilkan Lebih Banyak ({filteredProducts.length - visibleCount} tersisa)
+        <div className="load-more-container">
+          <button type="button" className="load-more-blue-btn" onClick={loadMore}>
+            Muat Lebih Banyak ({filteredProducts.length - visibleCount} lagi)
           </button>
         </div>
       )}
