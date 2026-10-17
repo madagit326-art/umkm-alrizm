@@ -23,14 +23,37 @@ export default function Navbar() {
 
   return (
     <header className="site-header">
-      {/* 1. Top Announcement Bar (Clean Single-Color Text) */}
-      <div className="top-announcement-bar">
-        <div className="announcement-content">
-          <span>GRATIS KONSULTASI MODEL &amp; UKURAN</span>
-          <span className="announcement-dot">•</span>
-          <span>100% HANDMADE BATU ALAM NUSANTARA</span>
-          <span className="announcement-dot">•</span>
-          <span>PENGIRIMAN AMAN SELURUH INDONESIA</span>
+      {/* 1. Top Announcement Bar (Smooth Infinite Horizontal Running Text) */}
+      <div className="top-announcement-bar" role="region" aria-label="Informasi Pengumuman">
+        <div className="marquee-track">
+          <div className="marquee-content">
+            <span>GRATIS KONSULTASI MODEL &amp; UKURAN</span>
+            <span className="announcement-dot">•</span>
+            <span>100% HANDMADE BATU ALAM NUSANTARA</span>
+            <span className="announcement-dot">•</span>
+            <span>PENGIRIMAN AMAN SELURUH INDONESIA</span>
+            <span className="announcement-dot">•</span>
+            <span>GRATIS KONSULTASI MODEL &amp; UKURAN</span>
+            <span className="announcement-dot">•</span>
+            <span>100% HANDMADE BATU ALAM NUSANTARA</span>
+            <span className="announcement-dot">•</span>
+            <span>PENGIRIMAN AMAN SELURUH INDONESIA</span>
+            <span className="announcement-dot">•</span>
+          </div>
+          <div className="marquee-content" aria-hidden="true">
+            <span>GRATIS KONSULTASI MODEL &amp; UKURAN</span>
+            <span className="announcement-dot">•</span>
+            <span>100% HANDMADE BATU ALAM NUSANTARA</span>
+            <span className="announcement-dot">•</span>
+            <span>PENGIRIMAN AMAN SELURUH INDONESIA</span>
+            <span className="announcement-dot">•</span>
+            <span>GRATIS KONSULTASI MODEL &amp; UKURAN</span>
+            <span className="announcement-dot">•</span>
+            <span>100% HANDMADE BATU ALAM NUSANTARA</span>
+            <span className="announcement-dot">•</span>
+            <span>PENGIRIMAN AMAN SELURUH INDONESIA</span>
+            <span className="announcement-dot">•</span>
+          </div>
         </div>
       </div>
 
