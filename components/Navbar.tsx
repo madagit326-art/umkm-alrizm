@@ -3,6 +3,7 @@
 import Image from "next/image";
 import Link from "next/link";
 import { useState, useEffect } from "react";
+import LanguageSwitcher from "@/components/LanguageSwitcher";
 
 export default function Navbar() {
   const [menuOpen, setMenuOpen] = useState(false);
@@ -115,8 +116,11 @@ export default function Navbar() {
             </a>
           </div>
 
-          {/* Right Action Icons (Search, Admin, WhatsApp) */}
+          {/* Right Action Icons (Language Switcher, Search, Admin, WhatsApp) */}
           <div className="nav-right-actions">
+            {/* Language Switcher */}
+            <LanguageSwitcher />
+
             {/* Search Icon */}
             <a
               href="#products"
@@ -171,6 +175,14 @@ export default function Navbar() {
 
         {/* Mobile Drawer Panel with Single-Color Line Icons */}
         <div id="mobile-menu-panel" className={`mobile-drawer ${menuOpen ? "open" : ""}`}>
+          <div className="mobile-drawer-lang-row">
+            <span className="mobile-drawer-lang-label">
+              <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" strokeWidth="2"><circle cx="12" cy="12" r="10"/><line x1="2" y1="12" x2="22" y2="12"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg>
+              <span>Bahasa / Language:</span>
+            </span>
+            <LanguageSwitcher />
+          </div>
+
           <div className="mobile-drawer-links">
             <Link href="/" onClick={() => setMenuOpen(false)} className="mobile-drawer-item active">
               <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" strokeWidth="2"><path d="m3 9 9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2 2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>

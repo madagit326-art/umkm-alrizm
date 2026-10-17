@@ -1,6 +1,7 @@
 import "./globals.css";
 import type { Metadata, Viewport } from "next";
 import FloatingWhatsApp from "@/components/FloatingWhatsApp";
+import GoogleTranslate from "@/components/GoogleTranslate";
 
 export const metadata: Metadata = {
   title: "UMKM Alrizm — Perhiasan Handmade & Sustainable Style",
@@ -35,6 +36,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
       <body>
         {children}
         <FloatingWhatsApp />
+        <GoogleTranslate />
       </body>
     </html>
   );
